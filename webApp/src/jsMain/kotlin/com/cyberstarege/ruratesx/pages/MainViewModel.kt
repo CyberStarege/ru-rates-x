@@ -91,7 +91,7 @@ class MainViewModel: ViewModel(), KoinComponent {
             rates = mainUiState.currencies
         )
         mainUiState.copy(
-            fromCurrencyCode = code,
+            toCurrencyCode = code,
             crossRate = crossRate,
             result = result
         )
