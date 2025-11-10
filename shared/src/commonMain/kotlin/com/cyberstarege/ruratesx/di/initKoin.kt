@@ -7,6 +7,10 @@ import org.koin.dsl.includes
 fun initKoin(config : KoinAppDeclaration? = null){
     startKoin {
         includes(config)
-        modules()
+        modules(
+            clientModule,
+            dataSourceModule,
+            repositoryModule
+        )
     }
 }
