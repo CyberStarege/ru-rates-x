@@ -3,16 +3,18 @@ package com.cyberstarege.ruratesx.pages
 import androidx.compose.runtime.*
 import com.cyberstarege.ruratesx.components.Column
 import com.cyberstarege.ruratesx.components.Row
+import com.cyberstarege.ruratesx.components.badges.DailyChangeBadge
 import com.cyberstarege.ruratesx.components.card.Card
 import com.cyberstarege.ruratesx.components.icon.MaterialIconButton
 import com.cyberstarege.ruratesx.components.inputs.STextInput
 import com.cyberstarege.ruratesx.components.picker.CurrencyPicker
 import com.cyberstarege.ruratesx.domain.model.Currency
 import com.cyberstarege.ruratesx.theme.ColorTheme
+import com.cyberstarege.ruratesx.utils.padding
+import com.cyberstarege.ruratesx.utils.twoDecimalsString
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
-import kotlin.math.round
 
 
 @Composable
@@ -28,9 +30,9 @@ fun MainPage(
     Column(
         attrs = {
             style {
-                height(100.vh)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.Center)
+                gap(24.px)
             }
         }
     ) {
@@ -57,9 +59,85 @@ fun MainPage(
                 result = mainUiState.result
             )
         }
+        CurrenciesList(currencies = mainUiState.currencies)
     }
 }
 
+@Composable
+fun CurrenciesList(
+    currencies: List<Currency>
+) {
+    Card {
+        Span(
+            attrs = {
+                style {
+                    padding(horizontal = 2.px)
+                    fontSize(24.px)
+                    fontWeight(800)
+                    backgroundColor(Color.transparent)
+                    color(ColorTheme.onSurface)
+                }
+            }
+        ) {
+            Text("Курсы валют ЦБ РФ")
+        }
+        currencies.forEach { currency ->
+            if (currency.charCode != "RUB") {
+                CurrencyInfoRow(currency = currency)
+            }
+        }
+    }
+}
+
+@Composable
+fun CurrencyInfoRow(
+    currency: Currency,
+) {
+    Row(
+        attrs = {
+            style {
+                display(DisplayStyle.Grid)
+                gap(16.px)
+                padding(vertical = 8.px)
+                alignItems(AlignItems.Center)
+                property("grid-template-columns", "1fr 120px 120px 90px")
+                backgroundColor(Color.transparent)
+            }
+        }
+    ) {
+        Span(
+            attrs = {
+                style {
+                    backgroundColor(Color.transparent)
+                    color(ColorTheme.onSurface)
+                }
+            }
+        ) {
+            Text(currency.name)
+        }
+        Span(
+            attrs = {
+                style {
+                    backgroundColor(Color.transparent)
+                    color(ColorTheme.onSurface)
+                }
+            }
+        ) {
+            Text("${currency.nominal} ${currency.charCode}")
+        }
+        Span(
+            attrs = {
+                style {
+                    backgroundColor(Color.transparent)
+                    color(ColorTheme.onSurface)
+                }
+            }
+        ) {
+            Text("${currency.value}")
+        }
+        DailyChangeBadge(currency.value - currency.previous)
+    }
+}
 
 @Composable
 fun ConverterInput(
@@ -87,6 +165,7 @@ fun ConverterInput(
         STextInput(
             attrs = {
                 style {
+                    width(100.percent)
                     height(50.px)
                 }
             },
@@ -167,16 +246,5 @@ fun ConverterInfo(
             val result = result.twoDecimalsString()
             Text("$amount $fromCurrencyCode = $result $toCurrencyCode")
         }
-    }
-}
-
-fun Double.twoDecimalsString(): String {
-    val scaled = round(this * 100.0) / 100.0
-    val s = scaled.toString()
-    return if (s.contains('.')) {
-        val parts = s.split('.')
-        parts[0] + "." + parts[1].padEnd(2, '0').take(2)
-    } else {
-        "$s.00"
     }
 }
