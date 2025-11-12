@@ -12,5 +12,6 @@ object CardStyle: StyleSheet() {
         color(ColorTheme.onSurface)
         backgroundColor(ColorTheme.surfaceContainerLow)
         padding(16.px)
+        width(100.percent)
     }
 }
