@@ -12,8 +12,10 @@ fun MainContent(
     Column(
         attrs = {
             style {
-                marginLeft(200.px)
-                marginRight(200.px)
+                marginTop(100.px)
+                marginLeft(450.px)
+                marginRight(450.px)
+                marginBottom(100.px)
             }
         },
         content = content
